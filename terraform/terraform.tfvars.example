@@ -1,0 +1,16 @@
+# Copy to an ignored .tfvars file. Never commit secrets or Terraform state.
+admin_url               = "https://localhost:9999"
+pf_issuer               = "https://localhost:9031"
+local_test_insecure_tls = false
+# ca_certificate_file   = "C:/certificates/local-pf-ca.pem"
+
+requesting_client_id     = "xaa-primary-client"
+requesting_client_secret = "REPLACE_WITH_A_RANDOM_SECRET_AT_LEAST_32_CHARS"
+audience_client_secret   = "REPLACE_WITH_A_DIFFERENT_RANDOM_SECRET_AT_LEAST_32_CHARS"
+subject_issuer           = "https://your-subject-issuer.example"
+subject_jwks             = "REPLACE_WITH_PUBLIC_RSA_JWKS_JSON"
+authorized_test_subject  = "REPLACE_WITH_ONE_AUTHORIZED_TEST_SUBJECT"
+target_issuer            = "https://target.example.test"
+target_client_id         = "target-client"
+target_resource          = "https://api.example.test/reports"
+allowed_scopes           = ["read:reports"]

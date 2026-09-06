@@ -1,0 +1,38 @@
+# Local publication drafts, retained on disk but not part of the code repository.
+/docs/articles/
+
+# Local credentials, fixtures and diagnostic downloads.
+.local/
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Dependencies, build output and test coverage.
+node_modules/
+coverage/
+.nyc_output/
+**/target/
+*.class
+
+# Terraform working data and secrets. Keep .terraform.lock.hcl and examples.
+**/.terraform/
+**/*.tfstate*
+**/*.tfplan
+**/*.tfvars
+**/*.tfvars.json
+!**/*.tfvars.example
+
+# Logs, JVM crash diagnostics and heap dumps.
+*.log
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# Operating-system metadata and editor temporary files.
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~

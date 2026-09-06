@@ -1,0 +1,13 @@
+{
+  "name": "pingfederate-xaa-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node.js client for PingFederate token exchange and downstream ID-JAG exchange.",
+  "type": "module",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}

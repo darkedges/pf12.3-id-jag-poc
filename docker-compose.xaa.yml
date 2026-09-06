@@ -1,0 +1,11 @@
+# Optional overlay for reproducible plugin deployment after building the JAR.
+# docker compose -f docker-compose.yml -f docker-compose.xaa.yml up -d
+services:
+  pingfederate:
+    volumes:
+      - type: bind
+        source: ./generator/target/xaa-id-jag-generator.jar
+        target: /opt/out/instance/server/default/deploy/xaa-id-jag-generator.jar
+        read_only: true
+        bind:
+          create_host_path: false
