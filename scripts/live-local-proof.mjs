@@ -4,6 +4,7 @@ import https from 'node:https';
 import { readFileSync } from 'node:fs';
 import { randomUUID, sign } from 'node:crypto';
 import { verifyIdJag } from './smoke-id-jag.mjs';
+import { printDecodedJwt, showJwtRequested } from '../src/jwt-display.mjs';
 
 const config = JSON.parse(readFileSync('.local/local.tfvars.json', 'utf8'));
 const privateKey = readFileSync('.local/subject-private.pem', 'utf8');
@@ -86,6 +87,7 @@ async function main() {
   check('live response expiry is bounded', result.data.expires_in > 0 && result.data.expires_in <= 300);
   const claims = JSON.parse(Buffer.from(result.data.access_token.split('.')[1], 'base64url'));
   check('live subject matches authorized fixture', claims.sub === config.authorized_test_subject);
+  if (showJwtRequested()) printDecodedJwt(result.data.access_token, { label: 'Issued ID-JAG' });
 
   for (const [name, changes] of Object.entries({
     'wrong subject issuer': { iss: 'https://untrusted.example.test' },

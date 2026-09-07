@@ -1,6 +1,7 @@
 import { createPublicKey, verify } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { XaaClient, TOKEN_TYPES } from '../src/xaa-client.mjs';
+import { printDecodedJwt, showJwtRequested } from '../src/jwt-display.mjs';
 
 function requireValue(env, name) {
   if (typeof env[name] !== 'string' || !env[name].trim()) throw new Error(`Set ${name}`);
@@ -69,6 +70,7 @@ async function main(env) {
   });
   check(response.ok, 'Configured JWKS endpoint request failed');
   const proof = verifyIdJag(result.assertion, await response.json(), expected);
+  if (showJwtRequested()) printDecodedJwt(result.assertion, { label: 'Issued ID-JAG' });
   if (redeem) {
     const target = await client.exchangeIdJag({ assertion: result.assertion });
     check(typeof target.access_token === 'string' && target.access_token.length > 0

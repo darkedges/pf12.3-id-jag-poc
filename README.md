@@ -6,6 +6,36 @@ The earlier recommendation to replace ID-JAG with a JWT ATM flow was premature. 
 
 ## Build and verify
 
+The root `Makefile` provides the common tasks below. On Windows, use GNU Make from Chocolatey, Scoop or Git for Windows.
+
+```text
+make help
+make build          # Java plugin plus 26 offline proof checks
+make test           # Node and Terraform tests
+make check          # Build, tests, formatting, validation and Compose syntax
+make fixture        # Disposable local fixture under ignored .local/
+make live-proof     # Live local token endpoint proof
+```
+
+Decoded JWT output and terminal colors are enabled by default. The scripts print the issued ID-JAG header and body as colored attribute/value pairs. The compact token and signature are never printed:
+
+```powershell
+node scripts/live-local-proof.mjs
+make live-proof
+```
+
+Use `--no-show-jwt` or `XAA_SHOW_JWT=false` to hide decoded claims. Set `XAA_COLOR=never` for plain output. `XAA_COLOR=always` is available for explicit scripting clarity.
+
+Credentialed Terraform tasks require `TF_VAR_admin_password` in the environment and use `.local/local.tfvars.json` by default. Review the saved plan before `make terraform-apply`:
+
+```powershell
+make terraform-init
+make terraform-plan
+make terraform-apply
+```
+
+Override paths when needed, for example `make java-build PF_INSTALL_DIR=C:/path/to/pingfederate/12.3.3` or `make terraform-plan TFVARS=.local/staging.tfvars.json TFPLAN=.local/staging.tfplan`.
+
 ```powershell
 .\generator\build.ps1 -PfInstallDir C:\development\pingfed\pingfederate\12.3.3
 node --test
@@ -33,7 +63,7 @@ For real subject-token testing, follow [the 12.3.3 setup guide](docs/pingfederat
 node --env-file=.env scripts/smoke-id-jag.mjs
 ```
 
-The script requests the ID-JAG, verifies RS256 against the explicitly configured PF JWKS URL, and checks its claims. With `XAA_REDEEM=true`, it also attempts redemption using the separate target registration. Output contains only a verification summary. For a local CA, set `NODE_EXTRA_CA_CERTS` to its certificate and keep TLS verification enabled.
+The script requests the ID-JAG, verifies RS256 against the explicitly configured PF JWKS URL, and checks its claims. It displays the decoded issued JWT by default, without printing the compact token or signature. Use `--no-show-jwt` when claims should remain hidden. With `XAA_REDEEM=true`, it also attempts redemption using the separate target registration. For a local CA, set `NODE_EXTRA_CA_CERTS` to its certificate and keep TLS verification enabled.
 
 ## Evidence and limits
 
