@@ -6,8 +6,11 @@ tags:
   - devtools
   - typescript
 published: false
-canonical_url: https://devto-publisher.darkedges.com/
-description: A disposable unpublished article used to verify GitHub webhook synchronization.
+canonical_url: 'https://devto-publisher.darkedges.com/'
+description: >-
+  A disposable unpublished article used to verify GitHub webhook
+  synchronization.
+devto_id: 4595430
 ---
 
 # Testing the GitHub to dev.to Publisher
