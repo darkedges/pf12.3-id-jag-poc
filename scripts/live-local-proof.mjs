@@ -8,6 +8,11 @@ import { printDecodedJwt, showJwtRequested } from '../src/jwt-display.mjs';
 
 const config = JSON.parse(readFileSync('.local/local.tfvars.json', 'utf8'));
 const privateKey = readFileSync('.local/subject-private.pem', 'utf8');
+const ANSI = Object.freeze({
+  reset: '\u001b[0m', bold: '\u001b[1m', cyan: '\u001b[36m', blue: '\u001b[34m',
+  yellow: '\u001b[33m', green: '\u001b[32m', red: '\u001b[31m', gray: '\u001b[90m'
+});
+const paint = (value, color) => process.env.XAA_COLOR === 'never' ? value : `${color}${value}${ANSI.reset}`;
 const clientId = config.requesting_client_id || 'xaa-primary-client';
 const expected = {
   issuer: config.pf_issuer || 'https://localhost:9031',
@@ -62,6 +67,24 @@ function params(token = subject()) {
   });
 }
 
+function printCurlCommand() {
+  const option = value => paint(value, ANSI.yellow);
+  const value = (name, content, color = ANSI.green) => `${option('--data-urlencode')} ${paint(`"${name}=${content}"`, color)} ^`;
+  console.log([
+    paint('\nEquivalent local curl request (replace placeholders):', `${ANSI.bold}${ANSI.cyan}`),
+    `${paint('curl.exe', ANSI.blue)} ${option('--insecure')} ${option('--user')} ${paint(`"${clientId}:<REQUESTING_CLIENT_SECRET>"`, ANSI.red)} ^`,
+    `  ${value('grant_type', 'urn:ietf:params:oauth:grant-type:token-exchange')}`,
+    `  ${value('requested_token_type', 'urn:ietf:params:oauth:token-type:id-jag')}`,
+    `  ${value('subject_token_type', 'urn:ietf:params:oauth:token-type:id_token')}`,
+    `  ${value('subject_token', '<ID_TOKEN>', ANSI.red)}`,
+    `  ${value('audience', expected.audience)}`,
+    `  ${value('resource', expected.resource)}`,
+    `  ${value('scope', expected.scope)}`,
+    `  ${paint('https://localhost:9031/as/token.oauth2', ANSI.green)}`,
+    paint('Use a trusted CA instead of --insecure outside this local test server.', ANSI.gray)
+  ].join('\n'));
+}
+
 let checks = 0;
 function check(name, ok) {
   if (!ok) throw new Error(`Check failed: ${name}`);
@@ -74,6 +97,7 @@ async function reject(name, form, credentials) {
 }
 
 async function main() {
+  printCurlCommand();
   const result = await call('/as/token.oauth2', params());
   if (result.status !== 200) {
     const code = typeof result.data.error === 'string' && /^[a-z_]+$/.test(result.data.error) ? result.data.error : 'unknown';

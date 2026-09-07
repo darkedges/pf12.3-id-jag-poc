@@ -30,6 +30,8 @@ Terraform applied eight scoped resources. The follow-up `plan -detailed-exitcode
 - Duplicate or missing audience/resource/scope, unauthorized destinations/scopes/token types, missing client authentication and wrong secrets are rejected.
 - The disabled issuer-URL compatibility client supports audience routing but cannot authenticate.
 
+The runner prints an equivalent Windows `curl.exe` request before issuing the fixture exchange. Its client secret and subject token are placeholders, so copying the displayed command requires supplying those values separately. The example uses `--insecure` only for the local self-signed endpoint.
+
 The successful subject token is signed with a local fixture key explicitly trusted by JWT Token Processor 2.0. This exercises inbound cryptographic validation, not a real OIDC login. The runner displays decoded ID-JAG headers and claims by default, but does not print the compact subject token, compact ID-JAG, signature, client secret or PF private key. Use `--no-show-jwt` or `XAA_SHOW_JWT=false` when claims should remain hidden. PF-managed key retrieval and publication are now confirmed live.
 
 The generator now receives six mapped attributes, including the actual `HttpRequest` context object. It checks repeated parameters in Java. The server rejected expression-based mappings during initial configuration, and no global expression setting was enabled. PF also required a default mapping inside the resource-selected group; no global default group was configured.
